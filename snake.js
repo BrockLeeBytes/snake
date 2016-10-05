@@ -129,17 +129,6 @@ var snake = {
 		$('#' + trail[0] + ' .column' + trail[1]).removeClass('snake');
 	},
 
-	// Allows the snake to move each turn 
-	move: function() {
-		snake.removeTrail();
-		snake.updateSnake();
-		snake.render();
-		snake.eatFood();
-		if (snake.deadSnake()) {
-			game.over();
-		}
-	},
-
 	// Returns true if snake has collided with self
 	selfCollision: function() {
 		let head = this.head;
@@ -210,17 +199,38 @@ var food = {
 
 var game = {
 
+	// Starts the game loop
 	start: function() {
-		game.intervalID = setInterval(snake.move, 100);
+		game.intervalID = setInterval(game.update, 100);
 	},
-
+	// Ends the game loop
 	over: function() {
 		clearInterval(game.intervalID);
+	},
+
+	// Updates the state of all game objects once per loop
+	update: function() {
+		snake.removeTrail();
+		snake.updateSnake();
+		snake.render();
+		snake.eatFood();
+		if (snake.deadSnake()) {
+			game.over();
+		}
 	}
 };
 
 
 $(document).ready(function(){
+	
+	var begin = function(e) {
+		if (e.which === 13) {
+			$('#message').remove();
+			game.start();
+			document.removeEventListener('keydown', begin)
+		};
+	};
+
 	grid.render();
 	food.setLocation();
 	food.render();
@@ -243,12 +253,6 @@ $(document).ready(function(){
     }
 	};
 
-	document.addEventListener('keydown', function(e) {
-		if (e.which === 13) {
-			$('#message').remove();
-			
-			game.start();
-		};
-	});
+	document.addEventListener('keydown', begin);
 
 })

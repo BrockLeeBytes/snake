@@ -12,9 +12,10 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function coordinateMatch(arr1, arr2) {
-	let coordinate1 = [arr1[0], arr1[1]].join();
-	let coordinate2 = [arr2[0], arr2[1]].join();
+// Returns true if two coordinates are the same.
+function coordinateMatch(coor1, coor2) {
+	let coordinate1 = [coor1[0], coor1[1]].join();
+	let coordinate2 = [coor2[0], coor2[1]].join();
 	if (coordinate1 === coordinate2){
 		return true;
 	}else {
@@ -39,10 +40,10 @@ var grid = {
 };
 
 var snake = {
-	// mantains current position and direction of the haed of the snake
+	// default position and direction of the haed of the snake
 	head: [22,22, 'r'],
 	// an array containing each the location of each 
-	// section of the snake and it's direction
+	// section of the snake and each section's direction
 	sections: [[22,22, 'r']],
 
 	currentDirection: 'r',
@@ -135,7 +136,7 @@ var snake = {
 		snake.render();
 		snake.eatFood();
 		if (snake.deadSnake()) {
-			clearInterval(game.intervalID);
+			game.over();
 		}
 	},
 
@@ -208,7 +209,14 @@ var food = {
 
 
 var game = {
-	over: false,
+
+	start: function() {
+		game.intervalID = setInterval(snake.move, 100);
+	},
+
+	over: function() {
+		clearInterval(game.intervalID);
+	}
 };
 
 
@@ -239,7 +247,7 @@ $(document).ready(function(){
 		if (e.which === 13) {
 			$('#message').remove();
 			
-			game.intervalID = setInterval(snake.move, 100);
+			game.start();
 		};
 	});
 

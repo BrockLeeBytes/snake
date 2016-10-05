@@ -1,0 +1,1 @@
+A simple recreation of the classic game Snake using javacript and jquery.

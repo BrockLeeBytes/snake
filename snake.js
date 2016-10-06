@@ -88,8 +88,7 @@ var snake = {
 
 	// Changes direction of the head
 	changeDirection: function(newDirection) {
-		this.previousDirection = this.currentDirection;
-		this.currentDirection = newDirection;
+		snake.currentDirection = newDirection;
 	},
 
 	// Updates the location of a section of the snake
@@ -244,17 +243,17 @@ $(document).ready(function(){
 	snake.render();
 
 	document.onkeydown = function(e) {
-    switch (e.keyCode) {
-        case 37:
+    switch (true) {
+        case e.keyCode === 37 && snake.head[2] !== 'r':
             snake.changeDirection('l');
             break;
-        case 38:
+        case e.keyCode === 38 && snake.head[2] !== 'd':
             snake.changeDirection('u');
             break;
-        case 39:
+        case e.keyCode === 39 && snake.head[2] !== 'l':
             snake.changeDirection('r');
             break;
-        case 40:
+        case e.keyCode === 40 && snake.head[2] !== 'u':
             snake.changeDirection('d');
             break;
     }

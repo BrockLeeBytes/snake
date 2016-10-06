@@ -160,10 +160,10 @@ var snake = {
 		let location = food.location
 		if (coordinateMatch(head, location)) {
 			$('#' + location[0] + ' .column' + location[1]).removeClass('food');
-			food.score += 1;
 			snake.addSections();
 			food.setLocation();
 			food.render();
+			food.updateScore();
 		}
 	}
 
@@ -172,6 +172,7 @@ var snake = {
 var food = {
 	score: 0,
 
+	// Recursively sets food location until notValidLocation returns false.
 	setLocation: function(){
 		food.location = [getRandomInt(0, 40), getRandomInt(0, 40)];
 		if (food.notValidLocation()) {
@@ -179,6 +180,7 @@ var food = {
 		}
 	},
 
+	// Returns true if food location is set in a currently occupied space.
 	notValidLocation: function() {
 		let sections = snake.sections;
 		for( let i = 0; i < sections.length; i ++) {
@@ -187,6 +189,11 @@ var food = {
 			}
 		}
 		return false;
+	},
+
+	updateScore: function() {
+		food.score += 10;
+		$('#score').text('Score: ' + food.score);
 	},
 
 	render: function() {

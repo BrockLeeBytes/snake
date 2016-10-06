@@ -3,9 +3,15 @@
 	padding: 0;
 }
 
-#container {
-	position: relative;
+body {
+	width: 960px;
 	margin: auto;
+}
+
+#container {
+	display: block;
+	float: left;
+	position: relative;
 	background: #388e3c;
 	height: 800px;
 	width: 800px;
@@ -45,4 +51,9 @@
 
 .food {
 	background: #e9ff23;
+}
+
+.score {
+	display: block;
+	float: left;
 }

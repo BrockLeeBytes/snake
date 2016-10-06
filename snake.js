@@ -40,16 +40,7 @@ var grid = {
 };
 
 var snake = {
-	// default position and direction of the haed of the snake
-	head: [22,22, 'r'],
-	// an array containing each the location of each 
-	// section of the snake and each section's direction
-	sections: [[22,22, 'r']],
-
-	currentDirection: 'r',
-
-	alive: true,
-
+	
 	// renders snake based on current section coordinates
 	render: function() {
 		for (let section of this.sections) {
@@ -169,7 +160,6 @@ var snake = {
 };
 
 var food = {
-	score: 0,
 
 	// Recursively sets food location until notValidLocation returns false.
 	setLocation: function(){
@@ -204,14 +194,18 @@ var food = {
 
 
 var game = {
-
+	over: false,
 	// Starts the game loop
 	start: function() {
 		game.intervalID = setInterval(game.update, 100);
 	},
 	// Ends the game loop
-	over: function() {
+	finish: function() {
 		clearInterval(game.intervalID);
+		game.over = true;
+		$('#container').prepend('<div id="message"></div>');
+		$('#message').text(game.setMessage());
+		document.addEventListener('keydown', game.begin);
 	},
 
 	// Updates the state of all game objects once per loop
@@ -221,27 +215,54 @@ var game = {
 		snake.render();
 		snake.eatFood();
 		if (snake.deadSnake()) {
-			game.over();
+			game.finish();
+		}
+	},
+
+	//Clears board
+	reset: function() {
+		$('.dead').removeClass('dead snake');
+		$('.food').removeClass('food');
+	},
+
+	// Sets default values for beginning the game
+	setup: function() {
+		food.score = 0;
+		snake.head = [22,22, 'r'];
+		snake.sections = [[22,22, 'r']];
+		snake.currentDirection = 'r';
+		game.over = false;
+		food.setLocation();
+		food.render();
+		snake.render();
+	},
+
+	setMessage: function(){
+		if(!game.over) {
+			return "Welcome to Snake! Use the arrow keys to change direction. Press 'Enter' to begin.";
+		} else {
+			return "You lost with a score of " + food.score + ". Press 'Enter' to play again.";
 		}
 	}
 };
 
 
 $(document).ready(function(){
-	
-	var begin = function(e) {
+	game.begin = function(e) {
 		if (e.which === 13) {
+			game.over = false;
 			$('#message').remove();
+			game.reset();
+			game.setup();
 			game.start();
-			document.removeEventListener('keydown', begin)
+			document.removeEventListener('keydown', game.begin)
 		};
 	};
 
 	grid.render();
-	food.setLocation();
-	food.render();
-	snake.render();
-
+	$('#message').text(game.setMessage());
+	
+	
 	document.onkeydown = function(e) {
     switch (true) {
         case e.keyCode === 37 && snake.head[2] !== 'r':
@@ -258,7 +279,6 @@ $(document).ready(function(){
             break;
     }
 	};
-
-	document.addEventListener('keydown', begin);
-
+	document.addEventListener('keydown', game.begin);
+	
 })
